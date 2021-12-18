@@ -12,7 +12,7 @@ namespace harvest_api.Models
 
     public enum ReportTabs : byte
     {
-        Varieties = 1,
-        Orchards = 2
+        Varieties = 0,
+        Orchards = 1
     }
 }

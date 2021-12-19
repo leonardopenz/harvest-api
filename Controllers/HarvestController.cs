@@ -39,7 +39,7 @@ namespace harvest_api.Controllers
                         id = reader.GetString(0),
                         name = reader.GetString(1),
                         production = reader.GetDecimal(2),
-                        cost = reader.GetDecimal(3)
+                        cost = Math.Round(reader.GetDecimal(3), 3)
                     });
                 await reader.NextResultAsync();
             }

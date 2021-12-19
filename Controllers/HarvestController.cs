@@ -77,8 +77,8 @@ namespace harvest_api.Controllers
                         FROM data
                         WHERE {nameof(Harvest.pickingDate)} > '{start}' AND {nameof(Harvest.pickingDate)} <= '{end}' ";
 
-            if (!string.IsNullOrEmpty(filter.orchardId))
-                sql += $@"AND {nameof(Harvest.orchardId)} = '{filter.orchardId}' ";
+            if (!string.IsNullOrEmpty(filter.orchards))
+                sql += $@"AND {nameof(Harvest.orchardId)} IN ({filter.orchards}) ";
 
             sql += $@"GROUP BY {categoryColumnId};";
             sql = sql.Replace("\n", string.Empty).Replace("\r", string.Empty);

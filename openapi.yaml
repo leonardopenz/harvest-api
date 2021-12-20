@@ -1,0 +1,117 @@
+openapi: 3.0.1
+info:
+  title: harvest_api
+  version: v1
+host: elegant-door-335416.appspot.com
+paths:
+  /api/Harvest:
+    get:
+      tags:
+        - Harvest
+      parameters:
+        - name: start
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: end
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: orchards
+          in: query
+          schema:
+            type: string
+            nullable: true
+        - name: tab
+          in: query
+          schema:
+            $ref: '#/components/schemas/ReportTabs'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Report'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+  /api/Orchard:
+    get:
+      tags:
+        - Orchard
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Orchard'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Orchard'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Orchard'
+components:
+  schemas:
+    ReportTabs:
+      enum:
+        - 0
+        - 1
+      type: integer
+      format: int32
+    ReportCategorie:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        production:
+          type: number
+          format: double
+        cost:
+          type: number
+          format: double
+      additionalProperties: false
+    Report:
+      type: object
+      properties:
+        totalProduction:
+          type: number
+          format: double
+          readOnly: true
+        totalCost:
+          type: number
+          format: double
+          readOnly: true
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReportCategorie'
+          nullable: true
+      additionalProperties: false
+    Orchard:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+      additionalProperties: false

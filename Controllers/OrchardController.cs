@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace harvest_api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class OrchardController : ControllerBase
     {
         public AppDb Db { get; }
@@ -21,7 +21,7 @@ namespace harvest_api.Controllers
         /// <summary>
         /// Get all orchards from harvest database
         /// </summary>
-        /// <returns>Data</returns>
+        /// <returns>List of orchards</returns>
         [HttpGet]
         public async Task<List<Orchard>> Get()
         {

@@ -14,7 +14,5 @@ namespace harvest_api.Models
         public int numberOfBins { get; set; }
         public decimal hoursWorked { get; set; }
         public decimal payRateByHour { get; set; }
-
-        // public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
     }
 }

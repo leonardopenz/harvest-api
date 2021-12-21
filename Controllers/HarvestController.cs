@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace harvest_api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class HarvestController : ControllerBase
     {
         public AppDb Db { get; }
@@ -21,7 +21,8 @@ namespace harvest_api.Controllers
         /// <summary>
         /// Get harvest report
         /// </summary>
-        /// <returns>Data</returns>
+        /// <param name="filter">Filter by period and orchards</param>
+        /// <returns>Harvest report data</returns>
         [HttpGet]
         public async Task<Report> Get([FromQuery] Filter filter)
         {
@@ -78,7 +79,12 @@ namespace harvest_api.Controllers
                         WHERE {nameof(Harvest.pickingDate)} > '{start}' AND {nameof(Harvest.pickingDate)} <= '{end}' ";
 
             if (!string.IsNullOrEmpty(filter.orchards))
-                sql += $@"AND {nameof(Harvest.orchardId)} IN ({filter.orchards}) ";
+            {
+                var orchards = filter.orchards.Split(',').ToList();
+                var orchardSql = "'" + string.Join("','", filter.orchards) + "'";
+                orchardSql = orchardSql.Replace(",", "','");
+                sql += $@"AND {nameof(Harvest.orchardId)} IN ({orchardSql}) ";
+            }
 
             sql += $@"GROUP BY {categoryColumnId};";
             sql = sql.Replace("\n", string.Empty).Replace("\r", string.Empty);

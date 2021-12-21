@@ -7,14 +7,19 @@ Migrations
 
 # Other files and folders
 .settings/
+.vs/
+PublishProfiles/
+DesignTimeBuild/
 
 # Executables
 *.swf
 *.air
 *.ipa
 *.apk
+*.user
 
 # Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
 # should NOT be excluded as they contain compiler settings and other important
 # information for Eclipse / Flash Builder.
+appsettings.json
 appsettings.Development.json

@@ -51,6 +51,7 @@ namespace harvest_api.Controllers
         private string getSqlStatement(Filter filter)
         {
             string formatDate = "yyyy-MM-dd";
+            filter.end = filter.end.AddDays(1);
             string start = filter.start.ToString(formatDate);
             string end = filter.end.ToString(formatDate);
             string categoryColumnName = string.Empty;
@@ -76,7 +77,7 @@ namespace harvest_api.Controllers
                             sum({ nameof(Harvest.numberOfBins)}) as production, 
                             ({nameof(Harvest.payRateByHour)} * {nameof(Harvest.hoursWorked)}) as cost
                         FROM data
-                        WHERE {nameof(Harvest.pickingDate)} > '{start}' AND {nameof(Harvest.pickingDate)} <= '{end}' ";
+                        WHERE {nameof(Harvest.pickingDate)} >= '{start}' AND {nameof(Harvest.pickingDate)} <= '{end}' ";
 
             if (!string.IsNullOrEmpty(filter.orchards))
             {

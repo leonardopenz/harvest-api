@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using harvest_api.Models;
+using harvest_api.Models.Response;
 using harvest_api.Persistence;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,28 +25,32 @@ namespace harvest_api.Controllers
         /// <param name="filter">Filter by period and orchards</param>
         /// <returns>Harvest report data</returns>
         [HttpGet]
-        public async Task<Report> Get([FromQuery] Filter filter)
+        public async Task<Response<Report>> Get([FromQuery] Filter filter)
         {
-            var report = new Report { categories = new List<ReportCategorie>() };
-
-            await Db.Connection.OpenAsync();
-            using var command = Db.Connection.CreateCommand();
-            command.CommandText = getSqlStatement(filter);
-            using var reader = await command.ExecuteReaderAsync();
-            while (reader.HasRows)
+            try
             {
-                while (await reader.ReadAsync())
-                    report.categories.Add(new ReportCategorie
-                    {
-                        id = reader.GetString(0),
-                        name = reader.GetString(1),
-                        production = reader.GetDecimal(2),
-                        cost = Math.Round(reader.GetDecimal(3), 3)
-                    });
-                await reader.NextResultAsync();
-            }
+                var report = new Report { categories = new List<ReportCategorie>() };
 
-            return report;
+                await Db.Connection.OpenAsync();
+                using var command = Db.Connection.CreateCommand();
+                command.CommandText = getSqlStatement(filter);
+                using var reader = await command.ExecuteReaderAsync();
+                while (reader.HasRows)
+                {
+                    while (await reader.ReadAsync())
+                        report.categories.Add(new ReportCategorie
+                        {
+                            id = reader.GetString(0),
+                            name = reader.GetString(1),
+                            production = reader.GetDecimal(2),
+                            cost = Math.Round(reader.GetDecimal(3), 3)
+                        });
+                    await reader.NextResultAsync();
+                }
+
+                return new Response<Report>(report);
+            }
+            catch { return new Response<Report>("error"); }
         }
 
         private string getSqlStatement(Filter filter)

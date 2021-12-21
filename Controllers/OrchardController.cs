@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using harvest_api.Models;
+using harvest_api.Models.Response;
 using harvest_api.Persistence;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,26 +24,29 @@ namespace harvest_api.Controllers
         /// </summary>
         /// <returns>List of orchards</returns>
         [HttpGet]
-        public async Task<List<Orchard>> Get()
+        public async Task<Response<List<Orchard>>> Get()
         {
-            var orchards = new List<Orchard>();
-
-            await Db.Connection.OpenAsync();
-            using var command = Db.Connection.CreateCommand();
-            command.CommandText = $@"SELECT {(nameof(Harvest.orchardId))}, {(nameof(Harvest.orchardName))} FROM data GROUP BY {(nameof(Harvest.orchardId))};";
-            using var reader = await command.ExecuteReaderAsync();
-            while (reader.HasRows)
+            try
             {
-                while (await reader.ReadAsync())
-                    orchards.Add(new Orchard
-                    {
-                        id = reader.GetString(0),
-                        name = reader.GetString(1),
-                    });
-                await reader.NextResultAsync();
-            }
+                var orchards = new List<Orchard>();
 
-            return orchards;
+                await Db.Connection.OpenAsync();
+                using var command = Db.Connection.CreateCommand();
+                command.CommandText = $@"SELECT {(nameof(Harvest.orchardId))}, {(nameof(Harvest.orchardName))} FROM data GROUP BY {(nameof(Harvest.orchardId))};";
+                using var reader = await command.ExecuteReaderAsync();
+                while (reader.HasRows)
+                {
+                    while (await reader.ReadAsync())
+                        orchards.Add(new Orchard
+                        {
+                            id = reader.GetString(0),
+                            name = reader.GetString(1),
+                        });
+                    await reader.NextResultAsync();
+                }
+
+                return new Response<List<Orchard>>(orchards);
+            } catch { return new Response<List<Orchard>>("error"); }
         }
     }
 }
